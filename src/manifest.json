@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Chrome Slideshow",
   "description": "Allows you to setup a slideshow of webpages as your new tab page.",
-  "version": "0.2",
+  "version": "0.3",
   "content_scripts": [
     {
       "matches": [
