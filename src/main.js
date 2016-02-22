@@ -1,17 +1,28 @@
 
 var index = 0;
-var sites = getPref('sites') || [];// ['https://google.com', 'https://docs.google.com/presentation/d/1RbQ8oS5dmrgWl8NrzmJU_nUtdslkkLWKSfs2Zb8whpk/embed?start=false&loop=false&delayms=3000'];             
+var sites;
 
-/*setPref('sites',[
-	{ url: 'https://google.com', displayTime: 2500 }, 
-	{ url: 'https://docs.google.com/presentation/d/1RbQ8oS5dmrgWl8NrzmJU_nUtdslkkLWKSfs2Zb8whpk/embed?start=false&loop=false&delayms=3000' }
-]);*/
+var getRemoteConfig = function() {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == 4 && xhttp.status == 200) {
+			var x = document.createElement('x');
+			x.innerHTML = xhttp.responseText;
+			var els = x.getElementsByClassName('js-file-line');
+			var result = Array.prototype.slice.call(els).map(x => x.innerText).join('');
+			sites = JSON.parse(result);
+			startTimer();
+		}
+	};
+	xhttp.open("GET", 'https://github.com/caseygoodhew/sherlock-agile-dashboard/blob/master/chrome-slideshow-config.json', true);
+	xhttp.send();
+}
 
 var timer = function() {
 	
 	var iframe = document.getElementById('target');
 	var site = sites[index];
-	
+
 	iframe.onload = function() {
 
 		iframe.onload = null;
@@ -28,7 +39,12 @@ var timer = function() {
 	}
 }
 
-if (sites.length) {
-	timer();
+var startTimer = function() {
+	sites = sites || getPref('sites') || [];
+
+	if (sites.length) {
+		timer();
+	}
 }
 
+getRemoteConfig();
